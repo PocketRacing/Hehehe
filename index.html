@@ -1,0 +1,381 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Проститутки Томаса</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090909;color:#fff;font-family:Arial,sans-serif}
+header{padding:22px;background:linear-gradient(120deg,#2b1010,#17120a)}
+h1{color:#e8bd61;margin:0;font-size:25px}
+header p{color:#aaa;font-size:12px}
+nav{display:flex;gap:7px;overflow-x:auto;background:#151515;padding:12px;position:sticky;top:0}
+button{background:#292116;border:1px solid #69502a;color:#edc66d;padding:11px;border-radius:9px}
+button.active,.gold{background:#e8bd61;color:#111}
+main{padding:15px;max-width:850px;margin:auto}
+section{margin-bottom:20px}
+.hidden{display:none!important}
+h2{color:#e8bd61}
+.panel,.card,.stat{background:#171717;border:1px solid #40321f;border-radius:13px;padding:14px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.card{padding:0;overflow:hidden}
+.photo{height:145px;background:#292116;display:flex;align-items:center;justify-content:center;color:#bd9c5a}
+.photo img{width:100%;height:100%;object-fit:cover}
+.info{padding:10px}
+.info h3{font-size:15px;color:#e8bd61;margin:0 0 7px}
+small,.muted{color:#999;font-size:12px}
+input,textarea,select{width:100%;padding:12px;background:#101010;color:white;border:1px solid #574323;border-radius:8px;margin:6px 0 13px}
+label{font-size:13px;color:#ccc}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.row button{flex:1}
+.stat b{font-size:24px;color:#e8bd61;display:block}
+.stat span{font-size:11px;color:#aaa}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.timer{text-align:center;padding:20px}
+#clock{font-size:46px;color:#e8bd61;font-weight:bold;font-variant-numeric:tabular-nums}
+.bar{height:12px;background:#333;border-radius:20px;overflow:hidden}
+#progress{height:100%;width:0;background:linear-gradient(90deg,#a51e2d,#e8bd61);transition:width .3s}
+.actions{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}
+.actions button{font-size:11px;padding:8px}
+footer{text-align:center;color:#777;padding:20px}
+</style>
+</head>
+<body>
+
+<header>
+<h1 id="title">Проститутки Томаса</h1>
+<p>THOMAS VIP CLUB · ЛИЧНЫЙ КЛУБ · 18+</p>
+</header>
+
+<nav>
+<button class="active" onclick="page('home',this)">Главная</button>
+<button onclick="page('catalog',this)">Каталог</button>
+<button onclick="page('add',this)">Добавить</button>
+<button onclick="page('favorites',this)">Избранное</button>
+<button onclick="page('settings',this)">Настройки</button>
+</nav>
+
+<main>
+
+<section id="home">
+<h2>Кабинет босса 👑</h2>
+<div class="stats">
+<div class="stat"><b id="total">30</b><span>Профилей</span></div>
+<div class="stat"><b id="favs">0</b><span>Избранное</span></div>
+<div class="stat"><b id="sessions">0</b><span>Игровые сессии</span></div>
+</div>
+<div class="panel" style="margin-top:14px">
+<h2>Добро пожаловать, Томас!</h2>
+<p class="muted">Управляй своей коллекцией, создавай профили и открывай игровые режимы.</p>
+<button class="gold" onclick="page('catalog')">Открыть каталог</button>
+</div>
+</section>
+
+<section id="catalog" class="hidden">
+<h2>Каталог</h2>
+<input id="search" placeholder="Поиск по имени..." oninput="render()">
+<div id="cards" class="grid"></div>
+</section>
+
+<section id="add" class="hidden">
+<h2>Новая анкета</h2>
+<div class="panel">
+<label>Имя</label><input id="name" placeholder="Имя или псевдоним">
+<label>Страна</label><input id="country" placeholder="Страна">
+<label>Фото по ссылке</label><input id="photo" placeholder="https://...">
+<label>Загрузить фото</label><input type="file" id="file" accept="image/*">
+<label>Биография</label><textarea id="bio" rows="3"></textarea>
+<label>Категория контента</label>
+<select id="genre">
+<option>Не указано</option>
+<option>Вагинальный контент</option>
+<option>Анальный контент</option>
+<option>Оральный контент</option>
+<option>BDSM</option>
+<option>Групповые сцены</option>
+<option>Другое</option>
+</select>
+<button class="gold" onclick="add()">Добавить профиль</button>
+</div>
+</section>
+
+<section id="favorites" class="hidden">
+<h2>Избранное ❤️</h2>
+<div id="favCards" class="grid"></div>
+</section>
+
+<section id="profile" class="hidden">
+<button onclick="page('catalog')">← Назад</button>
+<div class="panel" style="margin-top:12px">
+<div id="profileContent"></div>
+</div>
+</section>
+
+<section id="tempo" class="hidden">
+<button onclick="backProfile()">← Назад к анкете</button>
+<div class="panel timer" style="margin-top:12px">
+<h2>Игровой режим «Темп»</h2>
+<div class="muted" id="tempoName">Персонаж</div>
+
+<div id="clock">00:00</div>
+<div class="bar"><div id="progress"></div></div>
+<p id="percent" class="muted">Прогресс: 0%</p>
+
+<h3 style="color:#e8bd61">Скорость</h3>
+<div class="row">
+<button onclick="setSpeed(0.5,this)">Медленно</button>
+<button class="active" onclick="setSpeed(1,this)">Средне</button>
+<button onclick="setSpeed(2,this)">Хард</button>
+</div>
+
+<h3 style="color:#e8bd61">Длительность игрового раунда</h3>
+<select id="duration" onchange="resetTimer()">
+<option value="60">1 минута</option>
+<option value="180">3 минуты</option>
+<option value="300" selected>5 минут</option>
+<option value="600">10 минут</option>
+</select>
+
+<h3 style="color:#e8bd61">Игровые показатели</h3>
+<p class="muted">Энергия персонажа</p>
+<div class="bar"><div id="energy" style="height:100%;width:100%;background:#bd9b52"></div></div>
+<p id="energyText">100%</p>
+
+<div class="row">
+<button class="gold" onclick="startTimer()">Старт</button>
+<button onclick="pauseTimer()">Пауза</button>
+<button onclick="resetTimer()">Сброс</button>
+</div>
+<button style="margin-top:12px;width:100%" onclick="finishTimer()">Завершить раунд</button>
+<p id="timerMessage" class="muted"></p>
+<p class="muted">Это условная игровая механика. Показатели не отражают реальные желания, состояние или сексуальные потребности людей.</p>
+</div>
+</section>
+
+<section id="settings" class="hidden">
+<h2>Настройки</h2>
+<div class="panel">
+<label>Название клуба</label>
+<input id="newTitle">
+<button class="gold" onclick="changeTitle()">Изменить название</button>
+<hr style="border-color:#333;margin:20px 0">
+<button onclick="backup()">Скачать резервную копию</button>
+<label style="display:block;margin-top:15px">Восстановить копию</label>
+<input type="file" id="backupFile" accept=".json">
+<button onclick="restore()">Восстановить</button>
+</div>
+</section>
+
+</main>
+<footer>THOMAS VIP CLUB · PERSONAL EDITION</footer>
+
+<script>
+const KEY="thomas_vip_v2";
+const starterNames=[
+"Angela White","Abella Danger","Riley Reid","Mia Malkova",
+"Eva Elfie","Lana Rhoades","Alexis Texas","Kendra Lust",
+"Brandi Love","Emily Willis","Nicole Aniston","Violet Myers",
+"Abigail Mac","Alexis Fawx","Tori Black","Jenna Jameson",
+"Adriana Chechik","Gianna Dior","Cherie DeVille","Jane Wilde",
+"Kira Noir","Charlotte Sins","Autumn Falls","Vanna Bardot",
+"Elsa Jean","Aidra Fox","Lily Lou","Kenzie Reeves",
+"Gina Valentina","Marley Brinx"
+];
+
+let data=[];
+let selected=null;
+let speed=1;
+let elapsed=0;
+let timer=null;
+let running=false;
+let sessionCount=0;
+
+function load(){
+ try{
+  data=JSON.parse(localStorage.getItem(KEY));
+  if(!Array.isArray(data))throw 1;
+ }catch(e){
+  data=starterNames.map((n,i)=>({
+   id:i+1,name:n,country:"",photo:"",
+   bio:"Публичная информация пока не добавлена.",
+   genre:"Не указано",favorite:false,rating:0
+  }));
+ }
+ save();
+}
+function save(){
+ localStorage.setItem(KEY,JSON.stringify(data));
+ document.getElementById("total").textContent=data.length;
+ document.getElementById("favs").textContent=data.filter(x=>x.favorite).length;
+ document.getElementById("sessions").textContent=sessionCount;
+}
+function safe(s){
+ return String(s||"").replace(/[&<>"']/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
+}
+function page(id,btn){
+ stopClock();
+ document.querySelectorAll("main section").forEach(x=>x.classList.add("hidden"));
+ document.getElementById(id).classList.remove("hidden");
+ document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));
+ if(btn)btn.classList.add("active");
+ if(id==="catalog"||id==="favorites")render();
+}
+function card(p){
+ return `<div class="card">
+ <div class="photo">${p.photo?`<img src="${safe(p.photo)}" onerror="this.style.display='none'">`:"Фото не добавлено"}</div>
+ <div class="info">
+ <h3>${safe(p.name)}</h3>
+ <small>${safe(p.country||"Страна не указана")}</small>
+ <p class="muted">${safe(p.genre)}</p>
+ <div class="actions">
+ <button onclick="openProfile(${p.id})">Открыть</button>
+ <button onclick="fav(${p.id})">${p.favorite?"♥":"♡"}</button>
+ <button onclick="rate(${p.id})">★ ${p.rating||"—"}</button>
+ <button onclick="removeProfile(${p.id})">Удалить</button>
+ </div></div></div>`;
+}
+function render(){
+ const q=(document.getElementById("search")?.value||"").toLowerCase();
+ document.getElementById("cards").innerHTML=data.filter(p=>p.name.toLowerCase().includes(q)).map(card).join("");
+ document.getElementById("favCards").innerHTML=data.filter(p=>p.favorite).map(card).join("")||"Пока пусто";
+}
+function openProfile(id){
+ selected=data.find(p=>p.id===id);
+ document.querySelectorAll("main section").forEach(x=>x.classList.add("hidden"));
+ document.getElementById("profile").classList.remove("hidden");
+ document.getElementById("profileContent").innerHTML=`
+ <div class="photo" style="height:220px">${selected.photo?`<img src="${safe(selected.photo)}">`:"Фото отсутствует"}</div>
+ <h2>${safe(selected.name)}</h2>
+ <p>${safe(selected.country)}</p>
+ <p>${safe(selected.bio)}</p>
+ <p class="muted">Категория: ${safe(selected.genre)}</p>
+ <button class="gold" onclick="openTempo()">Темп ⏱</button>
+ <button onclick="editNote()">Заметка</button>`;
+}
+function openTempo(){
+ document.querySelectorAll("main section").forEach(x=>x.classList.add("hidden"));
+ document.getElementById("tempo").classList.remove("hidden");
+ document.getElementById("tempoName").textContent=selected.name;
+ resetTimer();
+}
+function backProfile(){stopClock();openProfile(selected.id)}
+function add(){
+ const name=document.getElementById("name").value.trim();
+ if(!name)return alert("Укажи имя");
+ const p={
+ id:Date.now(),name,
+ country:document.getElementById("country").value,
+ photo:document.getElementById("photo").value,
+ bio:document.getElementById("bio").value,
+ genre:document.getElementById("genre").value,
+ favorite:false,rating:0
+ };
+ const file=document.getElementById("file").files[0];
+ if(file){
+  if(file.size>1500000)return alert("Фото больше 1,5 МБ. Используй ссылку.");
+  const r=new FileReader();
+  r.onload=()=>{p.photo=r.result;data.unshift(p);save();render();alert("Профиль добавлен!");page("catalog")};
+  r.readAsDataURL(file);
+ }else{
+  data.unshift(p);save();render();alert("Профиль добавлен!");page("catalog");
+ }
+}
+function fav(id){
+ const p=data.find(x=>x.id===id);p.favorite=!p.favorite;save();render();
+}
+function rate(id){
+ const p=data.find(x=>x.id===id);
+ const v=Number(prompt("Оценка от 1 до 10",p.rating||""));
+ if(Number.isInteger(v)&&v>=1&&v<=10){p.rating=v;save();render()}
+}
+function removeProfile(id){
+ if(confirm("Удалить профиль?")){data=data.filter(x=>x.id!==id);save();render()}
+}
+function editNote(){
+ const v=prompt("Личная заметка",selected.note||"");
+ if(v!==null){selected.note=v;save()}
+}
+function setSpeed(v,btn){
+ speed=v;
+ document.querySelectorAll("#tempo .row button").forEach(b=>b.classList.remove("active"));
+ btn.classList.add("active");
+}
+function duration(){return Number(document.getElementById("duration").value)}
+function displayTimer(){
+ const s=Math.floor(elapsed);
+ document.getElementById("clock").textContent=
+ String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+ const pct=Math.min(100,elapsed/duration()*100);
+ document.getElementById("progress").style.width=pct+"%";
+ document.getElementById("percent").textContent="Прогресс: "+Math.floor(pct)+"%";
+ const energy=Math.max(0,100-pct);
+ document.getElementById("energy").style.width=energy+"%";
+ document.getElementById("energyText").textContent=Math.round(energy)+"%";
+}
+function startTimer(){
+ if(running)return;
+ if(elapsed>=duration())resetTimer();
+ running=true;
+ document.getElementById("timerMessage").textContent="Игровой раунд запущен";
+ timer=setInterval(()=>{
+  elapsed+=speed;
+  if(elapsed>=duration()){
+   elapsed=duration();displayTimer();finishTimer();
+  }else displayTimer();
+ },1000);
+}
+function stopClock(){
+ if(timer)clearInterval(timer);
+ timer=null;running=false;
+}
+function pauseTimer(){
+ stopClock();
+ document.getElementById("timerMessage").textContent="Раунд приостановлен";
+}
+function resetTimer(){
+ stopClock();elapsed=0;displayTimer();
+ document.getElementById("timerMessage").textContent="Таймер готов";
+}
+function finishTimer(){
+ stopClock();elapsed=duration();displayTimer();
+ sessionCount++;save();
+ document.getElementById("timerMessage").textContent="Раунд завершён!";
+}
+function changeTitle(){
+ const t=document.getElementById("newTitle").value.trim();
+ if(!t)return;
+ document.getElementById("title").textContent=t;
+ localStorage.setItem("clubTitle",t);
+}
+function backup(){
+ const blob=new Blob([JSON.stringify({data,sessionCount,title:document.getElementById("title").textContent})],{type:"application/json"});
+ const a=document.createElement("a");
+ a.href=URL.createObjectURL(blob);a.download="thomas-club-backup.json";a.click();
+ URL.revokeObjectURL(a.href);
+}
+function restore(){
+ const f=document.getElementById("backupFile").files[0];
+ if(!f)return alert("Выбери файл");
+ const r=new FileReader();
+ r.onload=()=>{
+  try{
+   const d=JSON.parse(r.result);
+   if(!Array.isArray(d.data))throw 1;
+   data=d.data;sessionCount=d.sessionCount||0;
+   if(d.title)document.getElementById("title").textContent=d.title;
+   save();render();alert("Данные восстановлены");
+  }catch(e){alert("Ошибка файла")}
+ };
+ r.readAsText(f);
+}
+load();
+if(localStorage.getItem("clubTitle"))document.getElementById("title").textContent=localStorage.getItem("clubTitle");
+document.getElementById("newTitle").value=document.getElementById("title").textContent;
+render();
+</script>
+</body>
+</html>
